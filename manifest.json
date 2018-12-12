@@ -1,0 +1,25 @@
+{
+    "name": "OpenHUD",
+    "version": "1.0",
+    "description": "",
+    "manifest_version": 2,
+    "content_scripts": [
+        {
+            "matches": ["https://7xl.ggpoker.network/7XL/table/*"],
+            "js": [
+                "jquery-3.3.1.slim.min.js",
+                "common.js",
+                "openhud.7xl.js"
+            ]
+        }
+    ],
+    "browser_action": {
+        "default_icon": {
+            "16": "images/icon16.png",
+            "24": "images/icon24.png",
+            "32": "images/icon32.png"
+        },
+        "default_title": "Open HUD",
+        "default_popup": "toolbar.html"
+    }
+}
