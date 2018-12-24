@@ -25,13 +25,20 @@ function getTableName() {
 }
 
 function getBB() {
-    return parseFloat(jQuery('.brandIcon').text().split('$').pop());
+    const text = jQuery('.brandIcon').text();
+    if (text.indexOf('$') > -1) {
+        return parseFloat(text.split('$').pop());
+    } else if (text.indexOf('¥') > -1) {
+        return parseFloat(text.split('¥').pop());
+    }
+    return null;
 }
 
 function getGame() {
     const text = jQuery('.threeBlindsInfomation').text();
     if (text.indexOf('Omaha') > -1) return 'plo';
     if (text.indexOf('Hold\'em') > -1) return 'nlh';
+    if (text.indexOf('Chinese Rush') > -1) return 'nlh';
     return 'Unknown';
 }
 
@@ -157,30 +164,46 @@ async function start() {
 
     if ((seats.length > 0) && (handNum > 0)) {
         try {
-            const ret = await fetch('https://us-central1-my-random-scripts.cloudfunctions.net/openhud-nuts/', {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                },
-                body: JSON.stringify({
-                    game: getGame(),
-                    seats,
-                    bb,
-                    community: [...flop, ...turn, ...river]
-                })
-            });
 
-            const json = await ret.json();
+            const services = await new Promise(res => chrome.storage.sync.get(['disabled', 'services'], res));
+            services.services = services.services.filter(s => (services.disabled || []).indexOf(s) === -1);
+
+            const promisesMetadata = await Promise.all(services.services.map(async s => await (await fetch(s)).json()));
+            const servicesTitles = promisesMetadata.map(s => s.title);
+
+            const promises = await Promise.all(services.services.map(async s => {
+                const ret = await fetch(s, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                    },
+                    body: JSON.stringify({
+                        game: getGame(),
+                        seats,
+                        bb,
+                        community: [...flop, ...turn, ...river]
+                    })
+                });
+
+                const json = await ret.json();
+                return json;
+            }));
 
             const tooltips = jQuery('.playerTooltip') || [];
             for (let i = 0 ; i < tooltips.length ; i++) {
                 tooltips[i].style.visibility = 'hidden';
             }
 
-            Object.keys(json.players).forEach(playerName => {
+            const htmls = {};
+
+            promises.forEach((json, index) => Object.keys(json.players).forEach(playerName => {
+                htmls[playerName] = (htmls[playerName] || '') + '<div><b>' + servicesTitles[index] + '</b><div>' + json.players[playerName] + '</div></div>';
+            }));
+        
+            Object.keys(htmls).forEach(playerName => {
                 try {
-                    const html = json.players[playerName];
+                    const html = htmls[playerName];
                     let elm = xPath(`//span[contains(@class, "nickname") and contains(text(), "${playerName}")]/parent::*/parent::*/dd[contains(@class, "playerTooltip")]`)[0];
                     if (!elm) {
                         const _parent = xPath(`//span[contains(@class, "nickname") and contains(text(), "${playerName}")]/parent::*/parent::*`)[0];

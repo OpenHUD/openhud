@@ -1,5 +1,25 @@
 <html>
-    <body>
-        HELLO
+    <head>
+        <link rel='stylesheet' href='https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css' />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+        <link rel="stylesheet" href="./toolbar.css">
+
+        <script src='./jquery-3.3.1.slim.min.js'></script>
+        <script src='./material-components-web.min.js'></script>
+    </head>
+    <body style="width: 400px; background: rgb(238, 238, 238); font-family: Helvetica">
+        <div class='root'>
+            <div style="background:white; padding: 12px;">
+                <i class="fas fa-check" style="color: #43a047; margin-right: 12px"></i> Enabled
+            </div>
+            <div style="background:white; padding: 12px; margin-top: 6px" id='installed-services'>
+            </div>
+            <div style="background:white; padding: 12px; margin-top: 6px; cursor:pointer">
+                <i class="fas fa-plus-square" style="margin-right: 12px;"></i> Add a new service...
+            </div>
+        </div>
+
+        <script src='./toolbar.js'></script>
+
     </body>
 </html>
