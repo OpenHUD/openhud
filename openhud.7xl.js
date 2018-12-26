@@ -1,5 +1,5 @@
 const Timeouts = {
-    mainLoop: 5000,
+    mainLoop: 1000,
 };
 
 lastHandTime = new Date().getTime();
@@ -95,15 +95,18 @@ function getSeatCards(seatNum) {
     return s.split('').reverse().join('').match(/(..?)/g);
 }
 
-function getSeatInformation(skipReorder = false) {
+function getSeatInformation() {
     const BASE_XPATH = '//ul[contains(@class,"seatListWrap")]//li[contains(@class, "seatList")]';
     const numSeats = xPath(BASE_XPATH).length;
     let seats = [];
+    let dealer = 0;
     for (let i = 0 ; i < numSeats ; i++) {
 
         const elm = xPath(`${BASE_XPATH}[${i+1}]`)[0];
         const openSeat = !!xPath(`${BASE_XPATH}[${i+1}]//dl[contains(@class,"seatOpen")]`)[0];
-        const isDealer = elm.classList.contains('dealer');
+        if (elm.classList.contains('dealer')) {
+            dealer = i;
+        }
 
         if (!openSeat) {
             const isSittingOut = !!xPath(`${BASE_XPATH}[${i+1}]//dl[contains(@class,"sittingOut")]`)[0];
@@ -122,36 +125,38 @@ function getSeatInformation(skipReorder = false) {
 
                 const cards = getSeatCards(i + 1);
 
-                seats.push({
-                    playerName,
-                    isMe,
-                    isFolded,
-                    stack,
-                    pot,
-                    cards: cards || []
-                });
+                if (((cards || []).length == 0) && isMe && !isFolded) {
+                    // Just sat down
+                    seats.push(null);
+                } else {
+                    seats.push({
+                        playerName,
+                        isMe,
+                        isFolded,
+                        stack,
+                        pot,
+                        cards: cards || []
+                    });
+                }
             }
+        } else {
+            seats.push(null);
         }
     }
 
-    if (!skipReorder) {
-        const myPos = seats.findIndex(s => s.isMe);
-        const firstActedPos = (() => {
-            for (let i = 1 ; i < seats.length ; i++) {
-                const pos = (myPos + i ) % seats.length;
-                if ((seats[pos].isFolded) || (seats[pos].stack == 0)) {
-                    return pos;
-                }
-            }
-            return myPos;
-        })();
-
-        // Rotate the seats so first acted will be first element
-        seats = seats.slice(firstActedPos, seats.length).concat(seats.slice(0, firstActedPos));
+    let i = 0;
+    while ((seats[(seats.length + dealer - i) % seats.length] === null) && (i < seats.length)) {
+        i++;
     }
 
-    return seats;
+    if (seats[(seats.length + dealer - i) % seats.length]) {
+        seats[(seats.length + dealer - i) % seats.length].isButton = true;
+    }
+
+    return seats.filter(s => !!s);
 }
+
+const servicesManager = new ServicesManager();
 
 async function start() {
 
@@ -165,29 +170,20 @@ async function start() {
     if ((seats.length > 0) && (handNum > 0)) {
         try {
 
-            const services = await new Promise(res => chrome.storage.sync.get(['disabled', 'services'], res));
-            services.services = services.services.filter(s => (services.disabled || []).indexOf(s) === -1);
+            const services = await servicesManager.getActiveServices();
 
-            const promisesMetadata = await Promise.all(services.services.map(async s => await (await fetch(s)).json()));
-            const servicesTitles = promisesMetadata.map(s => s.title);
-
-            const promises = await Promise.all(services.services.map(async s => {
-                const ret = await fetch(s, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8',
-                    },
-                    body: JSON.stringify({
-                        game: getGame(),
-                        seats,
-                        bb,
-                        community: [...flop, ...turn, ...river]
-                    })
+            const servicesResult = await Promise.all(services.map(async service => {
+                const result = await service.exec({
+                    game: getGame(),
+                    seats,
+                    bb,
+                    community: [...flop, ...turn, ...river]
                 });
 
-                const json = await ret.json();
-                return json;
+                return Promise.resolve({
+                    title: service.metadata.title,
+                    result
+                });
             }));
 
             const tooltips = jQuery('.playerTooltip') || [];
@@ -197,8 +193,8 @@ async function start() {
 
             const htmls = {};
 
-            promises.forEach((json, index) => Object.keys(json.players).forEach(playerName => {
-                htmls[playerName] = (htmls[playerName] || '') + '<div><b>' + servicesTitles[index] + '</b><div>' + json.players[playerName] + '</div></div>';
+            servicesResult.forEach(({title, result}) => Object.keys(result.players).forEach(playerName => {
+                htmls[playerName] = (htmls[playerName] || '') + '<div><b>' + title + '</b><div>' + result.players[playerName] + '</div></div>';
             }));
         
             Object.keys(htmls).forEach(playerName => {
