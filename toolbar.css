@@ -1,0 +1,4 @@
+.mdc-switch--checked .mdc-switch__track {
+    background: green !important;;
+    border-color: green !important;
+}
