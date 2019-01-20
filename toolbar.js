@@ -7,6 +7,36 @@ const games = {
     'aof-omaha': 'AoF Omaha',
 };
 
+const BETS_TO_STR = {
+    'no-limit': 'NL{{shortname}}',
+    'pot-limit': 'PL{{shortname}}',
+    'allin-or-fold': 'AoF {{fullname}}',
+    '*':'{{fullname}}'
+}
+
+const TYPE_TO_SHORT_STR = {
+    'texas-holdem': 'H',
+     'omaha-holdem': 'O',
+}
+
+const TYPE_TO_LONG_STR = {
+    'texas-holdem': 'Holdem',
+     'omaha-holdem': 'Omaha',
+}
+
+const FORMAT_TO_STR = {
+    'cash': ' (cash games only)',
+    'tournament': ' (tournaments only)',
+    '*': ''
+}
+
+function gamesToString(games) {
+    return games.map(g => {
+        const bet = (BETS_TO_STR[g.bet] || '').replace(/{{shortname}}/, TYPE_TO_SHORT_STR[g.type]).replace(/{{fullname}}/, TYPE_TO_LONG_STR[g.type]);
+        return (bet || '') + (FORMAT_TO_STR[g.format] || '');
+    }).join(',');
+}
+
 async function go() {
     let disabled = [];
     let services = [];
@@ -37,7 +67,7 @@ async function go() {
                 '') +
             '       </div>' +
             '   </div>' +
-            '   <div>' + comp.metadata.games.map(g => games[g]).join(',') + '</div>' +
+            '   <div>' + gamesToString(comp.metadata.games) + '</div>' +
             '</div>'
         );
         elm.appendTo($('#installed-services'));

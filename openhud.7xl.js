@@ -35,11 +35,57 @@ function getBB() {
 }
 
 function getGame() {
-    const text = jQuery('.threeBlindsInfomation').text();
-    if (text.indexOf('Omaha') > -1) return 'plo';
-    if (text.indexOf('Hold\'em') > -1) return 'nlh';
-    if (text.indexOf('Chinese Rush') > -1) return 'nlh';
-    return 'Unknown';
+    if (window.location.href.indexOf('holdem/normal/cashgame') > -1) {
+        return {
+            type: 'texas-holdem',
+            bet: 'no-limit',
+            format: 'cash'
+        };
+    } else if (window.location.href.indexOf('omaha/normal/cashgame') > -1 ) {
+        return {
+            type: 'omaha-holdem',
+            bet: 'pot-limit',
+            format: 'cash'
+        };
+    } else if (window.location.href.indexOf('holdem/allinorfold/cashgame') > -1) {
+        return {
+            type: 'texas-holdem',
+            bet: 'allin-or-fold',
+            format: 'cash'
+        };
+    } else if (window.location.href.indexOf('omaha/allinorfold/cashgame') > -1) {
+        return {
+            type: 'omaha-holdem',
+            bet: 'allin-or-fold',
+            format: 'cash'
+        };
+    } else if (window.location.href.indexOf('holdem/normal/rush') > -1) {
+        return {
+            type: 'texas-holdem',
+            bet: 'no-limit',
+            format: 'cash'
+        };
+    } else if (window.location.href.indexOf('omaha/normal/rush') > -1) {
+        return {
+            type: 'omaha-holdem',
+            bet: 'pot-limit',
+            format: 'cash'
+        };
+    } else if (window.location.href.indexOf('holdem/normal/torunament') > -1) {
+        return {
+            type: 'texas-holdem',
+            bet: 'no-limit',
+            format: 'tournament'
+        };
+    } else if (window.location.href.indexOf('omaha/normal/torunament') > -1) {
+        return {
+            type: 'omaha-holdem',
+            bet: 'pot-limit',
+            format: 'tournament'
+        };
+    }
+
+    return null;
 }
 
 function isRiver() {
