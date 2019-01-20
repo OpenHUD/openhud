@@ -48,4 +48,14 @@ class ServicesManager {
 
         return p;
     }
+
+    async addService(url) {
+        const service = new Service({ serviceUrl: url });
+
+        await service.init();
+        this.services[url] = service;
+        await new Promise(res => chrome.storage.sync.set({services: Object.keys(this.services)}, res));
+        return service;
+    }
+
 }

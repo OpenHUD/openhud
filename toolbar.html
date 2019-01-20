@@ -14,8 +14,14 @@
             </div>
             <div style="background:white; padding: 12px; margin-top: 6px" id='installed-services'>
             </div>
-            <div style="background:white; padding: 12px; margin-top: 6px; cursor:pointer">
+            <div id='addservicebutton' style="background:white; padding: 12px; margin-top: 6px; cursor:pointer">
                 <i class="fas fa-plus-square" style="margin-right: 12px;"></i> Add a new service...
+            </div>
+            <div id='addservicepane' style="background:white; padding: 12px; margin-top: 6px; align-items: center; display: none;">
+                <div style="align-items: center; display: flex;">
+                    <div>https:// </div><input style="flex:1; padding: 6px;"/><div id='okbutton' style="cursor: pointer; background: green; color: white; padding: 6px 12px; margin-left: 12px;"><i class="fas fa-check"></i></div>
+                </div>
+                <div id="errormsg" style="color: red; margin-top: 6px; display: none;">Invalid url, or no service there.</div>
             </div>
         </div>
 
