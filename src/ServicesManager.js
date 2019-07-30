@@ -3,7 +3,8 @@ const INITIAL_SERVICES = [
     'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-aof/',
     'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-rfi/',
     'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-rcp/',
-    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-erh/'
+    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-erh/',
+    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-propokertools/'
 ];
 
 class ServicesManager {
