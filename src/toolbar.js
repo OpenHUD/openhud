@@ -82,13 +82,14 @@ async function addServiceToDOM(comp, activeServices) {
     elm.appendTo($('#installed-services'));
     const a = mdc.switchControl.MDCSwitch.attachTo(elm.find('.mdc-switch')[0]);
     a.checked = activeServices.indexOf(comp) > -1;
-    elm.find('input').on('change', (e) => {
+    elm.find('input').on('change', async (e) => {
         try {
             if (!e.target.checked) {
                 activeServices = activeServices.filter(s => s != comp);
             } else {
                 activeServices = [...activeServices, comp];
             }
+            const allServices = await servicesManager.getAllServices();
             const disabled = allServices.filter(s => activeServices.indexOf(s) === -1).map(s => s.serviceUrl);
             chrome.storage.sync.set({ disabled });
         } catch(e) {}

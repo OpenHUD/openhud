@@ -212,6 +212,7 @@ async function start() {
     const river = getRiverCard() || [];
     const seats = getSeatInformation();
     const bb = getBB();
+    const tableName = getTableName();
 
     if ((seats.length > 0) && (handNum > 0)) {
         try {
@@ -220,6 +221,7 @@ async function start() {
 
             const servicesResult = await Promise.all(services.map(async service => {
                 const result = await service.exec({
+                    tableName,
                     game: getGame(),
                     seats,
                     bb,
