@@ -214,7 +214,16 @@ async function start() {
     const bb = getBB();
     const tableName = getTableName();
 
-    if ((seats.length > 0) && (handNum > 0)) {
+    const isInvalidName = !!seats.find(s => {
+        if (s.playerName === 'Fold') return true;
+        if (s.playerName === 'Call') return true;
+        if (s.playerName === 'Raise') return true;
+        if (s.playerName === 'Check') return true;
+        if (s.playerName === 'Post Blind(s)') return true;
+        return false;
+    });
+
+    if ((seats.length > 0) && (handNum > 0) && (!isInvalidName)) {
         try {
 
             const services = await servicesManager.getActiveServices();
