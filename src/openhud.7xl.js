@@ -215,6 +215,7 @@ async function start() {
     const tableName = getTableName();
 
     const isInvalidName = !!seats.find(s => {
+        if (s.playerName === 'Bet') return true;
         if (s.playerName === 'Fold') return true;
         if (s.playerName === 'Call') return true;
         if (s.playerName === 'Raise') return true;
