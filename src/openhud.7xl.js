@@ -204,6 +204,15 @@ function getSeatInformation() {
 
 const servicesManager = new ServicesManager();
 
+const invalidPlayerNames = new Set([
+    'Bet',
+    'Fold',
+    'Call',
+    'Raise',
+    'Check',
+    'Post Blind(s)'
+]);
+
 async function start() {
 
     // TODO: Check for changes
@@ -214,15 +223,7 @@ async function start() {
     const bb = getBB();
     const tableName = getTableName();
 
-    const isInvalidName = !!seats.find(s => {
-        if (s.playerName === 'Bet') return true;
-        if (s.playerName === 'Fold') return true;
-        if (s.playerName === 'Call') return true;
-        if (s.playerName === 'Raise') return true;
-        if (s.playerName === 'Check') return true;
-        if (s.playerName === 'Post Blind(s)') return true;
-        return false;
-    });
+    const isInvalidName = !!seats.find(s => invalidPlayerNames.has(s.playerName));
 
     if ((seats.length > 0) && (handNum > 0) && (!isInvalidName)) {
         try {
