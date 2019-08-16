@@ -5,13 +5,13 @@
     "manifest_version": 2,
     "content_scripts": [
         {
-            "matches": ["https://7xl.ggpoker.network/7XL/table/*"],
+            "matches": ["https://*.ggpoker.network/*/table/*"],
             "js": [
                 "jquery-3.3.1.slim.min.js",
                 "common.js",
                 "ServicesManager.js",
                 "Service.js",
-                "openhud.7xl.js"
+                "openhud.ggnetwork.js"
             ]
         }
     ],
