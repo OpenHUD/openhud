@@ -5,7 +5,8 @@
     "manifest_version": 2,
     "content_scripts": [
         {
-            "matches": ["https://*.ggpoker.network/*/table/*"],
+            "matches": ["https://*.ggpoker.network/*"],
+            "include_globs": ["https://*.ggpoker.network/*/table/*"],
             "js": [
                 "jquery-3.3.1.slim.min.js",
                 "common.js",
