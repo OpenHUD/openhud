@@ -223,7 +223,7 @@ async function start() {
     const bb = getBB();
     const tableName = getTableName();
 
-    const isInvalidName = seats.map(seat => seat.playerName).some(invalidPlayerNames.has);
+    const isInvalidName = seats.map(seat => seat.playerName).some(playerName => invalidPlayerNames.has(playerName));
 
     if ((seats.length > 0) && (handNum > 0) && (!isInvalidName)) {
         try {
