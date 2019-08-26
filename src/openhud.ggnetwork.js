@@ -156,7 +156,14 @@ function getSeatInformation() {
 
         if (!openSeat) {
             const isSittingOut = !!xPath(`${BASE_XPATH}[${i+1}]//dl[contains(@class,"sittingOut")]`)[0];
-            const playerName = xPath(`${BASE_XPATH}[${i+1}]//span[contains(@class,"nickname")]`)[0].innerText;
+
+            // Player name is implemented as a span element with the "nickname" class.
+            // However, the same element is reused for:
+            // 1. Player action ("Fold", "Call", etc), adding the "action" class.
+            // 2. Player hand type in all-in situations ("three of a kind, Js"), adding the "userHand" class.
+            // As a side note, featured players also get the "ambassadorUser" class.
+            const playerNameElm = xPath(`${BASE_XPATH}[${i+1}]//span[contains(@class,"nickname") and not(contains(@class,"action")) and not(contains(@class,"userHand"))]`)[0];
+            const playerName = playerNameElm ? playerNameElm.innerText : '';
 
             if (!isSittingOut) {
                 const stack = parseFloat(xPath(`${BASE_XPATH}[${i+1}]//strong[contains(@class,"money")]`)[0].innerText.substr(1)) || 0;
@@ -204,15 +211,6 @@ function getSeatInformation() {
 
 const servicesManager = new ServicesManager();
 
-const invalidPlayerNames = new Set([
-    'Bet',
-    'Fold',
-    'Call',
-    'Raise',
-    'Check',
-    'Post Blind(s)'
-]);
-
 async function start() {
 
     // TODO: Check for changes
@@ -223,7 +221,7 @@ async function start() {
     const bb = getBB();
     const tableName = getTableName();
 
-    const isInvalidName = seats.map(seat => seat.playerName).some(playerName => invalidPlayerNames.has(playerName));
+    const isInvalidName = seats.some(seat => seat.playerName.length === 0);
 
     if ((seats.length > 0) && (handNum > 0) && (!isInvalidName)) {
         try {
