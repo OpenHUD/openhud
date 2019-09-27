@@ -161,6 +161,7 @@ function getSeatInformation() {
             // However, the same element is reused for:
             // 1. Player action ("Fold", "Call", etc), adding the "action" class.
             // 2. Player hand type in all-in situations ("three of a kind, Js"), adding the "userHand" class.
+            // 3. Big Hand Jackpot indiciator, perhaps (?) adding one of the following classes: "jackpot", "bigHandJackpot"
             // As a side note, featured players also get the "ambassadorUser" class.
             const playerNameElm = xPath(`${BASE_XPATH}[${i+1}]//span[contains(@class,"nickname") and not(contains(@class,"action")) and not(contains(@class,"userHand"))]`)[0];
             const playerName = playerNameElm ? playerNameElm.innerText : '';
