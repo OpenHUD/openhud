@@ -2,6 +2,20 @@ const Timeouts = {
     mainLoop: 1000,
 };
 
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  function(details) {
+    for (var i = 0; i < details.requestHeaders.length; ++i) {
+      if (details.requestHeaders[i].name === 'User-Agent') {
+        details.requestHeaders[i].value = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) PlutoTV/0.2.0 Chrome/49.0.2623.75 Electron/0.37.2 Safari/537.36';
+      }
+      break;
+    }
+    return { requestHeaders: details.requestHeaders };
+  },
+  {urls: ['<all_urls>']},
+  ['blocking', 'requestHeaders']
+);
+
 lastHandTime = new Date().getTime();
 const SESSION_ID = new Date().getTime();
 let handNum = 0;

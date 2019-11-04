@@ -1,6 +1,6 @@
 {
     "name": "OpenHUD",
-    "version": "1.15",
+    "version": "1.16",
     "description": "A free online poker assistant for amateur and professional poker players that wish to improve their game.",
     "manifest_version": 2,
     "content_scripts": [
@@ -25,6 +25,7 @@
         "default_popup": "toolbar.html"
     },
     "permissions": [
-        "storage"
+        "storage",
+	"webRequest"
     ]
 }
