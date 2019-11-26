@@ -1,10 +1,10 @@
 const INITIAL_SERVICES = [
-    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-nuts/',
-    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-aof/',
-    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-rfi/',
-    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-rcp/',
-    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-erh/',
-    'https://us-central1-my-random-scripts.cloudfunctions.net/openhud-propokertools/'
+    'https://nuts.openhud.io/',
+    'https://floattheturn.openhud.io/',
+    'https://upswingpoker.openhud.io/',
+    'https://redchippoker.openhud.io/',
+    'https://hutchison.openhud.io/',
+    'https://propokertools.openhud.io/'
 ];
 
 class ServicesManager {

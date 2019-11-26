@@ -1,11 +1,11 @@
 {
     "name": "OpenHUD",
-    "version": "1.16",
-    "description": "A free online poker assistant for amateur and professional poker players that wish to improve their game.",
+    "version": "1.17",
+    "description": "An open-source online poker head-up display.",
     "manifest_version": 2,
     "content_scripts": [
         {
-            "matches": ["https://*.ggpoker.network/*/table/*", "https://app.good-game-network.com/*/table/*"],
+            "matches": ["https://app.ggn.live/*/table/*", "https://*.ggpoker.network/*/table/*", "https://app.good-game-network.com/*/table/*"],
             "js": [
                 "jquery-3.3.1.slim.min.js",
                 "common.js",
